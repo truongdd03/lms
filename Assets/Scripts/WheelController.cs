@@ -24,6 +24,8 @@ public class WheelController : MonoBehaviour
     public float lmsTurnAngle = 0f;
     public int hasRightLane = 0;
     public int hasLeftLane = 0;
+    public int leftSensorTrigger = 0;
+    public int rightSensorTrigger = 0;
 
     private float currentAccerleration = 0f;
     private float currentBreakForce = 0f;
@@ -46,6 +48,7 @@ public class WheelController : MonoBehaviour
         rearRight.brakeTorque = currentBreakForce;
         rearLeft.brakeTorque = currentBreakForce;
 
+        DisplayLMSStatus();
         UpdateTurnAngle();
 
         UpdateWheel(frontLeft, frontLeftTransform);
@@ -81,20 +84,19 @@ public class WheelController : MonoBehaviour
     }
 
     void UpdateTurnAngle() {
-        DisplayLMSStatus();
-
         float turnAngle = Input.GetAxis("Horizontal");
         if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow)) {
             // User's input should override lms
             lmsTurnAngle = 0;
-        } else if (IsLMSActive() && lmsTurnAngle != 0) {
-            turnAngle = lmsTurnAngle;
-            if (lmsTurnAngle > 0) {
-                lms.text = "LMS: =====>";
-                lmsTurnAngle += 0.001f;
-            } else {
+            leftSensorTrigger = 0;
+            rightSensorTrigger = 0;
+        } else if (IsLMSActive() && (leftSensorTrigger > 0 || rightSensorTrigger > 0)) {
+            if (rightSensorTrigger > 0) {
+                turnAngle = -0.3f;
                 lms.text = "LMS: <=====";
-                lmsTurnAngle -= 0.001f;
+            } else {
+                turnAngle = 0.3f;
+                lms.text = "LMS: =====>";
             }
         }
         currentTurnAngle = maxTurnAngle * turnAngle;

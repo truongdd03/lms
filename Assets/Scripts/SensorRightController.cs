@@ -8,13 +8,14 @@ public class SensorRightController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.name.StartsWith("SCut")) {
-            car.GetComponent<WheelController>().lmsTurnAngle = -0.3f;
+            car.GetComponent<WheelController>().rightSensorTrigger += 1;
         }
     }
 
     private void OnTriggerExit(Collider other) {
-        if (other.gameObject.name.StartsWith("SCut") || car.GetComponent<WheelController>().lmsTurnAngle == 0) {
-            car.GetComponent<WheelController>().lmsTurnAngle = 0;
+        if (other.gameObject.name.StartsWith("SCut")) {
+            WheelController carController = car.GetComponent<WheelController>();
+            carController.rightSensorTrigger = Mathf.Max(0, carController.rightSensorTrigger - 1);
         }
     }
 }

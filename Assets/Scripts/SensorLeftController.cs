@@ -8,13 +8,13 @@ public class SensorLeftController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.name.StartsWith("Marker")) {
-            car.GetComponent<WheelController>().lmsTurnAngle = 0.3f;
+            car.GetComponent<WheelController>().leftSensorTrigger += 1;
         }
     }
 
     private void OnTriggerExit(Collider other) {
-        if (other.gameObject.name.StartsWith("Marker") || car.GetComponent<WheelController>().lmsTurnAngle == 0) {
-            car.GetComponent<WheelController>().lmsTurnAngle = 0;
-        }
+        if (other.gameObject.name.StartsWith("Marker")) {
+            WheelController carController = car.GetComponent<WheelController>();
+            carController.leftSensorTrigger = Mathf.Max(0, carController.leftSensorTrigger - 1);        }
     }
 }
