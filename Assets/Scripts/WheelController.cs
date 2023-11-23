@@ -16,7 +16,7 @@ public class WheelController : MonoBehaviour
     [SerializeField] Transform rearLeftTransform;
 
 
-    public float acceleration = 1000f;
+    public float acceleration = 700f;
     public float breakForce = 3000f;
     public float maxTurnAngle = 120f;
     public TMPro.TextMeshProUGUI speedText;
@@ -30,9 +30,13 @@ public class WheelController : MonoBehaviour
     private float currentAccerleration = 0f;
     private float currentBreakForce = 0f;
     private float currentTurnAngle = 0f;
+    private float currentSpeed = 0f;
 
     private void FixedUpdate() {
         currentAccerleration = acceleration * Input.GetAxis("Vertical");
+        if (currentSpeed > 80) {
+            currentAccerleration = 0;
+        }
 
         if (Input.GetKey(KeyCode.Space)) {
             currentBreakForce = breakForce;
@@ -57,7 +61,8 @@ public class WheelController : MonoBehaviour
         UpdateWheel(rearRight, rearRightTransform);
 
         var vel = car.velocity;
-        speedText.text = "Speed: " + Mathf.Round(vel.magnitude * 4.6f) + " mph";
+        currentSpeed = Mathf.Round(vel.magnitude * 5f);
+        speedText.text = "Speed: " + currentSpeed + " mph";
     }
 
     void UpdateWheel(WheelCollider col, Transform trans) {
@@ -70,7 +75,7 @@ public class WheelController : MonoBehaviour
     }
 
     bool IsLMSActive() {
-        return hasLeftLane > 0 && hasRightLane > 0;
+        return hasLeftLane > 0 && hasRightLane > 0 && currentSpeed >= 35;
     }
 
     void DisplayLMSStatus() {

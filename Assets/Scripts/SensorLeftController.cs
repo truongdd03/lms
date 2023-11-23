@@ -15,6 +15,7 @@ public class SensorLeftController : MonoBehaviour
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.name.StartsWith("Marker")) {
             WheelController carController = car.GetComponent<WheelController>();
-            carController.leftSensorTrigger = Mathf.Max(0, carController.leftSensorTrigger - 1);        }
+            carController.leftSensorTrigger = Mathf.Max(0, carController.leftSensorTrigger - 1);
+        }
     }
 }
