@@ -21,6 +21,7 @@ public class WheelController : MonoBehaviour
     public float maxTurnAngle = 120f;
     public TMPro.TextMeshProUGUI speedText;
     public TMPro.TextMeshProUGUI lms;
+    public TMPro.TextMeshProUGUI lmsButtonText;
     public float lmsTurnAngle = 0f;
     public int hasRightLane = 0;
     public int hasLeftLane = 0;
@@ -31,10 +32,11 @@ public class WheelController : MonoBehaviour
     private float currentBreakForce = 0f;
     private float currentTurnAngle = 0f;
     private float currentSpeed = 0f;
+    private bool lmsUserInput = true;
 
     private void FixedUpdate() {
         currentAccerleration = acceleration * Input.GetAxis("Vertical");
-        if (currentSpeed > 80) {
+        if (currentSpeed > 70) {
             currentAccerleration = 0;
         }
 
@@ -75,13 +77,16 @@ public class WheelController : MonoBehaviour
     }
 
     bool IsLMSActive() {
-        return hasLeftLane > 0 && hasRightLane > 0 && currentSpeed >= 35;
+        return hasLeftLane > 0 && hasRightLane > 0 && currentSpeed >= 35 && lmsUserInput;
     }
 
     void DisplayLMSStatus() {
         if (IsLMSActive()) {
             lms.text = "LMS: active";
             lms.color = Color.green;
+        } else if (!lmsUserInput) {
+            lms.text = "LMS: Off";
+            lms.color = Color.red;
         } else {
             lms.text = "LMS: inactive";
             lms.color = Color.grey;
@@ -107,5 +112,14 @@ public class WheelController : MonoBehaviour
         currentTurnAngle = maxTurnAngle * turnAngle;
         frontLeft.steerAngle = currentTurnAngle;
         frontRight.steerAngle = currentTurnAngle;
+    }
+
+    public void UserToggleLMS() {
+        lmsUserInput = !lmsUserInput;
+        if (lmsUserInput) {
+            lmsButtonText.text = "Disable LMS";
+        } else {
+            lmsButtonText.text = "Enable LMS";
+        }
     }
 }
