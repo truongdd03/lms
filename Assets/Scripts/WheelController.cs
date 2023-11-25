@@ -33,6 +33,7 @@ public class WheelController : MonoBehaviour
     private float currentTurnAngle = 0f;
     private float currentSpeed = 0f;
     private bool lmsUserInput = true;
+    private float lastSteeringOverrideByUser = -1f;
 
     private void FixedUpdate() {
         currentAccerleration = acceleration * Input.GetAxis("Vertical");
@@ -76,8 +77,12 @@ public class WheelController : MonoBehaviour
         trans.rotation = rotation;
     }
 
-    bool IsLMSActive() {
-        return hasLeftLane > 0 && hasRightLane > 0 && currentSpeed >= 35 && lmsUserInput;
+    public bool IsInLane() {
+        return hasLeftLane > 0 && hasRightLane > 0;
+    }
+
+    public bool IsLMSActive() {
+        return IsInLane() && currentSpeed >= 35 && lmsUserInput;
     }
 
     void DisplayLMSStatus() {
@@ -95,12 +100,20 @@ public class WheelController : MonoBehaviour
 
     void UpdateTurnAngle() {
         float turnAngle = Input.GetAxis("Horizontal");
+        if (turnAngle != 0) {
+            lastSteeringOverrideByUser = Time.time;
+        }
+
         if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow)) {
             // User's input should override lms
             lmsTurnAngle = 0;
             leftSensorTrigger = 0;
             rightSensorTrigger = 0;
-        } else if (IsLMSActive() && (leftSensorTrigger > 0 || rightSensorTrigger > 0)) {
+        } else if (
+            IsLMSActive() &&
+            (leftSensorTrigger > 0 || rightSensorTrigger > 0) &&
+            (Time.time - lastSteeringOverrideByUser) > 1f // Check to ensure user is not overriding
+        ) {
             if (rightSensorTrigger > 0) {
                 turnAngle = -0.3f;
                 lms.text = "LMS: <=====";
