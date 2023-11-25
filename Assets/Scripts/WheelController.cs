@@ -18,7 +18,7 @@ public class WheelController : MonoBehaviour
 
     public float acceleration = 700f;
     public float breakForce = 3000f;
-    public float maxTurnAngle = 120f;
+    public float maxTurnAngle = 150f;
     public TMPro.TextMeshProUGUI speedText;
     public TMPro.TextMeshProUGUI lms;
     public TMPro.TextMeshProUGUI lmsButtonText;
@@ -36,7 +36,7 @@ public class WheelController : MonoBehaviour
 
     private void FixedUpdate() {
         currentAccerleration = acceleration * Input.GetAxis("Vertical");
-        if (currentSpeed > 70) {
+        if (currentSpeed > 80) {
             currentAccerleration = 0;
         }
 
