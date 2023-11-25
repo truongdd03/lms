@@ -27,6 +27,7 @@ public class WheelController : MonoBehaviour
     public int hasLeftLane = 0;
     public int leftSensorTrigger = 0;
     public int rightSensorTrigger = 0;
+    public GameObject carObject;
 
     private float currentAccerleration = 0f;
     private float currentBreakForce = 0f;
@@ -78,7 +79,9 @@ public class WheelController : MonoBehaviour
     }
 
     public bool IsInLane() {
-        return hasLeftLane > 0 && hasRightLane > 0;
+        SignalController signalController = carObject.GetComponent<SignalController>();
+        // If signal on, return false even if in lane
+        return hasLeftLane > 0 && hasRightLane > 0 && !signalController.IsSignalOn();
     }
 
     public bool IsLMSActive() {
